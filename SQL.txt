@@ -1,0 +1,67 @@
+/*DROP DATABASE keramik;*/
+
+CREATE DATABASE keramik;
+USE keramik;
+
+CREATE TABLE empresa(
+    idEmpresa INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100),
+    correo VARCHAR(300),
+    telefono BIGINT(12)
+);
+
+CREATE TABLE horno(
+    idHorno INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    idEmpresa INT
+);
+
+CREATE TABLE coccion(
+    idCoccion INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    fecha BIGINT(10),
+    idHorno INT,
+    idCeramica INT
+);
+
+CREATE TABLE ceramica(
+    idCeramica INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    tipo VARCHAR(50),
+    humedadMin FLOAT,
+    humedadMax FLOAT,
+    temperaturaMin FLOAT,
+    temperaturaMax FLOAT
+);
+
+CREATE TABLE registro(
+    idRegistro INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    idCoccion INT,
+    fecha BIGINT(10),
+    humedad FLOAT,
+    temperatura FLOAT
+);
+
+CREATE TABLE incidencia(
+    idIncidencia INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    idRegistro INT,
+    tipo VARCHAR(50)
+);
+
+ALTER TABLE horno
+ADD FOREIGN KEY(idEmpresa) REFERENCES empresa(idEmpresa);
+
+ALTER TABLE coccion
+ADD FOREIGN KEY(idHorno) REFERENCES horno(idHorno),
+ADD FOREIGN KEY(idCeramica) REFERENCES ceramica(idCeramica);
+
+ALTER TABLE registro
+ADD FOREIGN KEY(idCoccion) REFERENCES coccion(idCoccion);
+
+ALTER TABLE incidencia
+ADD FOREIGN KEY(idRegistro) REFERENCES registro(idRegistro);
+
+-- Pruebas
+INSERT INTO empresa(idEmpresa, nombre, correo, telefono) VALUES (1, "KeramikTest", "keramik@gmail.com", 527774421234);
+INSERT INTO horno(idHorno, idEmpresa) VALUES (1, 1);
+INSERT INTO ceramica(idCeramica, tipo, humedadMin, humedadMax, temperaturaMin, temperaturaMax) VALUES (1, "Prueba", 40, 70, 20, 27);
+INSERT INTO coccion(idCoccion, fecha, idHorno, idCeramica) VALUES (1, 1669574412, 1, 1);
+INSERT INTO registro(idRegistro, idCoccion, fecha, humedad, temperatura) VALUES (1, 1, 1669574412, 0.0, 0.0);
+INSERT INTO incidencia(idIncidencia, idRegistro, tipo) VALUES(1, 1, "PruebaFalla");
